@@ -1,0 +1,35 @@
+---
+title: "creative-data-visualization"
+author: "SLCornett"
+class: "ANT388 Applied Data Analysis"
+output: 
+  output: 
+  html_document: 
+    theme: darkly
+    highlight: textmate
+    code_folding: show
+    toc: yes
+    toc_float: yes
+    toc_depth: 4
+    fig_width: 8
+---
+```{r setup, include=FALSE}
+# These are some {knitr} options I typically use to format my ***RMarkdown*** documents in a consistent way
+# You should feel free to alter these or use other "chunk options" as you see fit!
+# Sometimes, for example, you might want to suppress warnings or
+# messages, and that behavior can be set for specific code chunks in
+# the chunk header, e.g., ```{r warning = FALSE, echo = FALSE}
+knitr::opts_chunk$set(
+  eval = TRUE, # run code in code chunks
+  echo = TRUE, # render output of code chunks
+  warning = TRUE, # do not suppress "warnings"
+  message = TRUE, # do not suppress "messages"
+#  comment = "##", # prefix for comment lines
+#  prompt = ">", # prefix for code lines
+  tidy = TRUE,
+  tidy.opts = list(blank = FALSE, width.cutoff = 75),
+  fig.path = "images/", # name of folder for images
+  fig.align = "center" # centers any images on the page
+)
+```
+
