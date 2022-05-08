@@ -33,3 +33,14 @@ knitr::opts_chunk$set(
 )
 ```
 
+# Creative Data Visualization: Electrophysiology Data
+
+```{r preliminaries, message=FALSE, warning=FALSE}
+require(tidyverse)
+```
+
+```{r}
+f1 <- "" 
+```
+
+
