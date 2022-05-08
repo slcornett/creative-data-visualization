@@ -37,10 +37,19 @@ knitr::opts_chunk$set(
 
 ```{r preliminaries, message=FALSE, warning=FALSE}
 require(tidyverse)
+require(ggplot2)
+# from github
+devtools::install_github("cutterkom/generativeart")
+require(generativeart)
 ```
 
-```{r}
-f1 <- "" 
+```{r load in gssg oxidation dataset}
+f1 <- "https://raw.githubusercontent.com/slcornett/creative-data-visualization/main/data/2018-04-05_GSSG_Oxidation.csv"
+gssg <- read_csv(f1,  col_names = TRUE)
+head(gssg)
+gssg_p1 <- ggplot(data = gssg, aes(x = time_s, y = GSSG_Current_µA)) +
+  geom_jitter()
+gssg_p1
 ```
 
 
