@@ -1,9 +1,7 @@
 ---
 title: "creative-data-visualization"
 author: "SLCornett"
-class: "ANT388 Applied Data Analysis"
-output: 
-  output: 
+output:
   html_document: 
     theme: darkly
     highlight: textmate
@@ -11,7 +9,7 @@ output:
     toc: yes
     toc_float: yes
     toc_depth: 4
-    fig_width: 8
+    fig_width: 10
 ---
 ```{r setup, include=FALSE}
 # These are some {knitr} options I typically use to format my ***RMarkdown*** documents in a consistent way
@@ -22,34 +20,73 @@ output:
 knitr::opts_chunk$set(
   eval = TRUE, # run code in code chunks
   echo = TRUE, # render output of code chunks
-  warning = TRUE, # do not suppress "warnings"
-  message = TRUE, # do not suppress "messages"
+  warning = TRUE, # do suppress "warnings"
+  message = TRUE, # do suppress "messages"
 #  comment = "##", # prefix for comment lines
 #  prompt = ">", # prefix for code lines
   tidy = TRUE,
-  tidy.opts = list(blank = FALSE, width.cutoff = 75),
+  tidy.opts = list(blank = FALSE, width.cutoff = 100),
   fig.path = "images/", # name of folder for images
   fig.align = "center" # centers any images on the page
 )
 ```
 
-# Creative Data Visualization: Electrophysiology Data
-
+# Creative Data Visualization: Electrophysiology Data\
 ```{r preliminaries, message=FALSE, warning=FALSE}
 require(tidyverse)
+require(knitr)
+require(dplyr)
 require(ggplot2)
 # from github
-devtools::install_github("cutterkom/generativeart")
-require(generativeart)
+# devtools::install_github("marcusvolz/mathart")
+# require(mathart)
+# devtools::install_github("cutterkom/generativeart")
+# require(generativeart)
+require(aRtsy)
+require(gganimate)
 ```
 
-```{r load in gssg oxidation dataset}
+## Background on data\
+```{r echo=FALSE, out.width="100%", message=FALSE}
+include_graphics("images/Figure_Potential_for_Redox_Modulation_of_α1-Homopentameric_GlyR.png") # context
+```
+
+## **GSSG** Oxidation of the Positive Charged Residues
+```{r echo=FALSE, out.width="100%", message=FALSE}
+include_graphics("images/2018-04-05_GSSG_Trace.png") # full trace with treatment regimen
+```
+1.\
+2.\
+3.\
+4.\
+
+**load GSSG data**
+```{r gssg oxidation dataset}
 f1 <- "https://raw.githubusercontent.com/slcornett/creative-data-visualization/main/data/2018-04-05_GSSG_Oxidation.csv"
 gssg <- read_csv(f1,  col_names = TRUE)
-head(gssg)
-gssg_p1 <- ggplot(data = gssg, aes(x = time_s, y = GSSG_Current_µA)) +
-  geom_jitter()
+gssg <- gssg %>% filter(time_s >=1000, time_s<=2000) # make it slightly less giant
+```
+
+### Trace Plots
+```{r gssg visualizations}
+# statics plot
+gssg_p1 <- ggplot(data = gssg, aes(x = time_s, y = GSSG_Current_µA, color = GSSG_Current_µA)) +
+  scale_color_continuous(type = "viridis") +
+  geom_jitter() +
+  theme_classic() +
+  labs(title = "GSSG and Glycine", x = "time (s)", y = "Current (µA)")
 gssg_p1
+# animated!!
+gssg_a1 <- ggplot(data = gssg, aes(x = time_s, y = GSSG_Current_µA, color = GSSG_Current_µA)) +
+  scale_color_continuous(type = "viridis") +
+  geom_jitter() +
+  theme_classic() +
+  labs(title = "GSSG and Glycine: {frame_time}", x = "time (s)", y = "Current (µA)") +
+  transition_time(time = gssg$time_s) +
+  shadow_wake(wake_length = 0.1, alpha = FALSE) +
+  shadow_mark(alpha = 0.3, size = 0.5) +
+  ease_aes('linear')
+gssg_a1
 ```
 
 
