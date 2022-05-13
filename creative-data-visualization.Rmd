@@ -68,6 +68,7 @@ include_graphics("images/2018-04-05_GSSG_Trace.png") # full trace with treatment
 f1 <- "https://raw.githubusercontent.com/slcornett/creative-data-visualization/main/data/2018-04-05_GSSG_Oxidation.csv"
 gssg <- read_csv(f1,  col_names = TRUE)
 gssg <- gssg %>% filter(time_s >=1000, time_s<=2000) # make it slightly less giant
+head(gssg)
 ```
 
 ### **GSSG** Trace Plots
@@ -75,19 +76,18 @@ gssg <- gssg %>% filter(time_s >=1000, time_s<=2000) # make it slightly less gia
 # static plot
 gssg_p1 <- ggplot(data = gssg, aes(x = time_s, y = GSSG_Current_µA, color = GSSG_Current_µA)) +
   scale_color_continuous(type = "viridis") +
-  geom_jitter() +
-  theme_classic() +
-  labs(title = "GSSG and Glycine")
-  #theme(legend.title = element_text(size = 7, color = "black"))
+  geom_jitter(show.legend = FALSE) +
+  ggtitle("Oxidative Effect of GSSG on Glycine-Receptor") +
+  theme_classic()
 gssg_p1
 
 # animated! like a heart beat
 gssg_a1 <- ggplot(data = gssg, aes(x = time_s, y = GSSG_Current_µA, color = GSSG_Current_µA)) +
   scale_color_continuous(type = "viridis") +
-  geom_jitter() +
+  geom_jitter(show.legend = FALSE) +
+  ggtitle("Oxidative Effect of GSSG on Glycine-Receptor") + 
   theme_classic() +
-  labs(title = "GSSG and Glycine", x = "time (s): {frame_time}", y = "Current (µA)") +
-  # theme(legend.title = element_text(size = 7, color = "black")) +
+  labs(x = "time (s): {frame_time}", y = "Current uA") +
   # gganimate
   transition_time(time = gssg$time_s) +
   shadow_wake(wake_length = 0.2, alpha = FALSE) +
@@ -97,13 +97,10 @@ gssg_a1
 # with a trace 
 gssg_a2 <- ggplot(data = gssg, aes(x = time_s, y = GSSG_Current_µA, color = GSSG_Current_µA)) +
   scale_color_continuous(type = "viridis") +
-  geom_jitter() +
+  geom_jitter(show.legend = FALSE) +
+  ggtitle("Oxidative Effect of GSSG on Glycine-Receptor") + 
   theme_classic() +
-  labs(title = "GSSG and Glycine", x = "time (s): {frame_time}", y = "Current (µA)") +
-  #theme(plot.title = element_text(size = 14, color = "dark green", face = "bold"),
-      #  axis.title.x = element_text(size = 11, color = "dark green"),
-       # axis.title.y = element_text(size = 11, color = "dark green"),
-       # legend.title = element_text(size = 7, color = "black")) +
+  labs(x = "time (s): {frame_time}", y = "Current µA") +
   # gganimate
   transition_time(time = gssg$time_s) +
   shadow_wake(wake_length = 0.1, alpha = FALSE) +
@@ -147,35 +144,37 @@ gsh <- gsh %>% filter(time_s >=300, time_s<=1600) # make it slightly less giant
 # statics plot
 gsh_p1 <- ggplot(data = gsh, aes(x = time_s, y = GSH_Current_µA, color = GSH_Current_µA)) +
   scale_color_continuous(type = "viridis") +
-  geom_jitter() +
+  geom_jitter(show.legend = FALSE) +
+  ggtitle("Reductive Effect of GSH on Glycine-Receptor") +
   theme_classic() + 
-  labs(title = "GSH and Glycine", x = "time (s)", y = "Current (µA)") 
-  #theme(plot.title = element_text(size = 14, color = "dark green", face = "bold"),
-        #axis.title.x = element_text(size = 11, color = "dark green"),
-        #axis.title.y = element_text(size = 11, color = "dark green"),
-        #legend.title = element_text(size = 7, color = "black"))
+  labs(x = "time (s)", y = "Current (µA)")
 gsh_p1
 # animated! like a heart beat
-gsh_a1 <- ggplot(data = gsh, aes(x = time_s, y = GSSG_Current_µA, color = GSSG_Current_µA)) +
+gsh_a1 <- ggplot(data = gsh, aes(x = time_s, y = GSH_Current_µA, color = GSH_Current_µA)) +
   scale_color_continuous(type = "viridis") +
-  geom_jitter() +
+  geom_jitter(show.legend = FALSE) +
+  ggtitle("Reductive Effect of GSH on Glycine-Receptor") +
   theme_classic() +
-  labs(title = "GSH and Glycine", x = "time (s): {frame_time}", y = "Current (µA)") +
+  labs(x = "time (s): {frame_time}", y = "Current (µA)") +
   # gganimate
-  transition_time(time = gssg$time_s) +
+  transition_time(time = gsh$time_s) +
   shadow_wake(wake_length = 0.2, alpha = FALSE) +
   ease_aes('linear')
 gsh_a1
 # with a trace 
 gsh_a2 <- ggplot(data = gsh, aes(x = time_s, y = GSH_Current_µA, color = GSH_Current_µA)) +
   scale_color_continuous(type = "viridis") +
-  geom_jitter() +
+  geom_jitter(show.legend = FALSE) +
+  ggtitle("Reductive Effect of GSH on Glycine-Receptor") +
   theme_classic() +
-  labs(title = "GSH and Glycine", x = "time (s): {frame_time}", y = "Current (µA)") +
+  labs(x = "time (s): {frame_time}", y = "Current (µA)") +
   # gganimate
-  transition_time(time = gssg$time_s) +
+  transition_time(time = gsh$time_s) +
   shadow_wake(wake_length = 0.1, alpha = FALSE) +
   shadow_mark(alpha = 0.3, size = 1) +
   ease_aes('linear')
 gsh_a2
 ```
+
+
+## References\
