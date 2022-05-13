@@ -31,19 +31,20 @@ knitr::opts_chunk$set(
 )
 ```
 
-# Creative Data Visualization: Electrophysiology Data\
+# Electrophysiology: Redox Modulation of Homopentameric $\alpha$-1 Glycine Receptor using Glutathione Disulfide (GSSG) and Glutathione (GSH)\
 ```{r preliminaries, message=FALSE, warning=FALSE}
 require(tidyverse)
+require(tidyr)
 require(knitr)
 require(dplyr)
 require(ggplot2)
+require(gganimate)
 # from github
 # devtools::install_github("marcusvolz/mathart")
 # require(mathart)
 # devtools::install_github("cutterkom/generativeart")
 # require(generativeart)
 require(aRtsy)
-require(gganimate)
 ```
 
 ## Background on data\
@@ -51,14 +52,16 @@ require(gganimate)
 include_graphics("images/Figure_Potential_for_Redox_Modulation_of_α1-Homopentameric_GlyR.png") # context
 ```
 
-## **GSSG** Oxidation of the Positive Charged Residues
+
+## **GSSG** Oxidation\
+**LOSS OF ELECTRONS = OXIDATION**:    $X^+ - e^- = Xº$\
 ```{r echo=FALSE, out.width="100%", message=FALSE}
 include_graphics("images/2018-04-05_GSSG_Trace.png") # full trace with treatment regimen
 ```
-1.\
-2.\
-3.\
-4.\
+1. **Control** Ephys Recording Solution (ND)\
+2. **Positive Control:** 50µM Glycine in ND\
+3. **Pre-treatment:** 5mM GSSG in ND\
+4. **Co-Application** 50µM Glycine + 5mM GSSG in ND\
 
 **load GSSG data**
 ```{r gssg oxidation dataset}
@@ -67,26 +70,112 @@ gssg <- read_csv(f1,  col_names = TRUE)
 gssg <- gssg %>% filter(time_s >=1000, time_s<=2000) # make it slightly less giant
 ```
 
-### Trace Plots
+### **GSSG** Trace Plots
 ```{r gssg visualizations}
-# statics plot
+# static plot
 gssg_p1 <- ggplot(data = gssg, aes(x = time_s, y = GSSG_Current_µA, color = GSSG_Current_µA)) +
   scale_color_continuous(type = "viridis") +
   geom_jitter() +
   theme_classic() +
-  labs(title = "GSSG and Glycine", x = "time (s)", y = "Current (µA)")
+  labs(title = "GSSG and Glycine")
+  #theme(legend.title = element_text(size = 7, color = "black"))
 gssg_p1
-# animated!!
+
+# animated! like a heart beat
 gssg_a1 <- ggplot(data = gssg, aes(x = time_s, y = GSSG_Current_µA, color = GSSG_Current_µA)) +
   scale_color_continuous(type = "viridis") +
   geom_jitter() +
   theme_classic() +
-  labs(title = "GSSG and Glycine: {frame_time}", x = "time (s)", y = "Current (µA)") +
+  labs(title = "GSSG and Glycine", x = "time (s): {frame_time}", y = "Current (µA)") +
+  # theme(legend.title = element_text(size = 7, color = "black")) +
+  # gganimate
   transition_time(time = gssg$time_s) +
-  shadow_wake(wake_length = 0.1, alpha = FALSE) +
-  shadow_mark(alpha = 0.3, size = 0.5) +
+  shadow_wake(wake_length = 0.2, alpha = FALSE) +
   ease_aes('linear')
 gssg_a1
+
+# with a trace 
+gssg_a2 <- ggplot(data = gssg, aes(x = time_s, y = GSSG_Current_µA, color = GSSG_Current_µA)) +
+  scale_color_continuous(type = "viridis") +
+  geom_jitter() +
+  theme_classic() +
+  labs(title = "GSSG and Glycine", x = "time (s): {frame_time}", y = "Current (µA)") +
+  #theme(plot.title = element_text(size = 14, color = "dark green", face = "bold"),
+      #  axis.title.x = element_text(size = 11, color = "dark green"),
+       # axis.title.y = element_text(size = 11, color = "dark green"),
+       # legend.title = element_text(size = 7, color = "black")) +
+  # gganimate
+  transition_time(time = gssg$time_s) +
+  shadow_wake(wake_length = 0.1, alpha = FALSE) +
+  shadow_mark(alpha = 0.3, size = 1) +
+  ease_aes('linear')
+gssg_a2
+```
+
+```{r}
+#gssg1 <- gssg %>% mutate("abGSSG_Current_µA" = abs(GSSG_Current_µA)) %>% 
+ # gather(key = "Current", value = "value", abGSSG_Current_µA ) # collapses 2 variables into key-value pairs
+#head(gssg1)
+# try to plot two traces on the same plot
+#gssg_p2 <- ggplot(data = gssg1, aes(x = time_s, y = Current), color = Current) +
+ # geom_line() +
+ # scale_color_continuous(type = "viridis")
+#gssg_p2
 ```
 
 
+## **GSH** Reduction\
+**GAIN OF ELECTRIONS = REDUCTION**:   $X^+ + e^- = Xº$\
+```{r echo=FALSE, out.width="100%", message=FALSE}
+include_graphics("images/2018-04-12_GSH_Trace.png") # full trace with treatment regimen
+```
+1. **Control** Ephys Recording Solution (ND)\
+2. **Positive Control:** 50µM Glycine in ND\
+3. **Pre-treatment:** 5mM GSH in ND\
+4. **Co-Application** 50µM Glycine + 5mM GSH in ND\
+
+**load GSH data**\
+```{r gsh reduction dataset}
+f2 <- "https://raw.githubusercontent.com/slcornett/creative-data-visualization/main/data/2018-04-12_GSH_Reduction.csv"
+gsh <- read_csv(f2,  col_names = TRUE)
+head(gsh)
+gsh <- gsh %>% filter(time_s >=300, time_s<=1600) # make it slightly less giant
+```
+
+### **GSH** Trace Plots
+```{r gsh visualizations}
+# statics plot
+gsh_p1 <- ggplot(data = gsh, aes(x = time_s, y = GSH_Current_µA, color = GSH_Current_µA)) +
+  scale_color_continuous(type = "viridis") +
+  geom_jitter() +
+  theme_classic() + 
+  labs(title = "GSH and Glycine", x = "time (s)", y = "Current (µA)") 
+  #theme(plot.title = element_text(size = 14, color = "dark green", face = "bold"),
+        #axis.title.x = element_text(size = 11, color = "dark green"),
+        #axis.title.y = element_text(size = 11, color = "dark green"),
+        #legend.title = element_text(size = 7, color = "black"))
+gsh_p1
+# animated! like a heart beat
+gsh_a1 <- ggplot(data = gsh, aes(x = time_s, y = GSSG_Current_µA, color = GSSG_Current_µA)) +
+  scale_color_continuous(type = "viridis") +
+  geom_jitter() +
+  theme_classic() +
+  labs(title = "GSH and Glycine", x = "time (s): {frame_time}", y = "Current (µA)") +
+  # gganimate
+  transition_time(time = gssg$time_s) +
+  shadow_wake(wake_length = 0.2, alpha = FALSE) +
+  ease_aes('linear')
+gsh_a1
+# with a trace 
+gsh_a2 <- ggplot(data = gsh, aes(x = time_s, y = GSH_Current_µA, color = GSH_Current_µA)) +
+  scale_color_continuous(type = "viridis") +
+  geom_jitter() +
+  theme_classic() +
+  labs(title = "GSH and Glycine", x = "time (s): {frame_time}", y = "Current (µA)") +
+  # gganimate
+  transition_time(time = gssg$time_s) +
+  shadow_wake(wake_length = 0.1, alpha = FALSE) +
+  shadow_mark(alpha = 0.3, size = 1) +
+  ease_aes('linear')
+gsh_a2
+```
