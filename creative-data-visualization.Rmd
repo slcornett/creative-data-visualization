@@ -71,12 +71,12 @@ gssg <- gssg %>% filter(time_s >=1000, time_s<=2000) # make it slightly less gia
 head(gssg)
 ```
 
-### **GSSG** Trace Plots
+### **GSSG** Trace Plots\
 ```{r gssg visualizations}
 # static plot
 gssg_p1 <- ggplot(data = gssg, aes(x = time_s, y = GSSG_Current_µA, color = GSSG_Current_µA)) +
   scale_color_continuous(type = "viridis") +
-  geom_jitter(show.legend = FALSE) +
+  geom_line(show.legend = FALSE) +
   ggtitle("Oxidative Effect of GSSG on Glycine-Receptor") +
   theme_classic()
 gssg_p1
@@ -107,17 +107,37 @@ gssg_a2 <- ggplot(data = gssg, aes(x = time_s, y = GSSG_Current_µA, color = GSS
   shadow_mark(alpha = 0.3, size = 1) +
   ease_aes('linear')
 gssg_a2
-```
+# adding the absolute value to plot bot the current and absolute value of the current together 
+# because i bet it would look very cool
+gssg <- gssg %>% mutate("abGSSG_Current_µA" = abs(GSSG_Current_µA)) 
+ #gather(key = "Current", value = "value", abGSSG_Current_µA ) # collapses 2 variables into key-value pairs
+head(gssg) # cool absolute value present in the dataset
 
-```{r}
-#gssg1 <- gssg %>% mutate("abGSSG_Current_µA" = abs(GSSG_Current_µA)) %>% 
- # gather(key = "Current", value = "value", abGSSG_Current_µA ) # collapses 2 variables into key-value pairs
-#head(gssg1)
 # try to plot two traces on the same plot
-#gssg_p2 <- ggplot(data = gssg1, aes(x = time_s, y = Current), color = Current) +
- # geom_line() +
- # scale_color_continuous(type = "viridis")
-#gssg_p2
+# static
+gssg_p2 <- ggplot(data = gssg, aes(x = time_s)) +
+  geom_line(aes(y = GSSG_Current_µA, color = GSSG_Current_µA), show.legend = FALSE) +
+  geom_line(aes(y = abGSSG_Current_µA, color = abGSSG_Current_µA), show.legend = FALSE) +
+  scale_color_continuous(type = "viridis") +
+  ggtitle("Oxidative Effect of GSSG on Glycine-Receptor") + 
+  theme_classic() +
+  labs(x = "time (s)", y = "Current µA")
+gssg_p2
+# animated line
+gssg_a3 <- ggplot(data = gssg, aes(x = time_s)) +
+  geom_jitter(aes(y = GSSG_Current_µA, color = GSSG_Current_µA), show.legend = FALSE) +
+  geom_jitter(aes(y = abGSSG_Current_µA, color = abGSSG_Current_µA), show.legend = FALSE) +
+  scale_color_continuous(type = "viridis") +
+  ggtitle("Oxidative Effect of GSSG on Glycine-Receptor") + 
+  theme_classic() +
+  labs(x = "time (s): {frame_time}", y = "Current µA") +
+  # gganimate
+  transition_time(time = gssg$time_s) +
+  shadow_wake(wake_length = 0.1, alpha = FALSE) +
+  shadow_mark(alpha = 0.3, size = 1) +
+  ease_aes('linear')
+gssg_a3
+# i think it indeed looks very cool
 ```
 
 
@@ -135,16 +155,17 @@ include_graphics("images/2018-04-12_GSH_Trace.png") # full trace with treatment 
 ```{r gsh reduction dataset}
 f2 <- "https://raw.githubusercontent.com/slcornett/creative-data-visualization/main/data/2018-04-12_GSH_Reduction.csv"
 gsh <- read_csv(f2,  col_names = TRUE)
+gsh <- gsh %>% filter(time_s >=300, time_s<=1600) # make it slightly less giant, frame the cool stuff
 head(gsh)
-gsh <- gsh %>% filter(time_s >=300, time_s<=1600) # make it slightly less giant
 ```
 
 ### **GSH** Trace Plots
 ```{r gsh visualizations}
+# second verse, same as the first, but now with a reducing agent doing something unexpected
 # statics plot
 gsh_p1 <- ggplot(data = gsh, aes(x = time_s, y = GSH_Current_µA, color = GSH_Current_µA)) +
   scale_color_continuous(type = "viridis") +
-  geom_jitter(show.legend = FALSE) +
+  geom_line(show.legend = FALSE) +
   ggtitle("Reductive Effect of GSH on Glycine-Receptor") +
   theme_classic() + 
   labs(x = "time (s)", y = "Current (µA)")
@@ -174,6 +195,37 @@ gsh_a2 <- ggplot(data = gsh, aes(x = time_s, y = GSH_Current_µA, color = GSH_Cu
   shadow_mark(alpha = 0.3, size = 1) +
   ease_aes('linear')
 gsh_a2
+
+# adding the absolute value to plot bot the current and absolute value of the current together 
+# because i bet it would look very cool
+gsh <- gsh %>% mutate("abGSH_Current_µA" = abs(GSH_Current_µA)) 
+head(gsh) # cool absolute value present in the dataset
+
+# try to plot two traces on the same plot
+# static 2 lines
+gsh_p2 <- ggplot(data = gsh, aes(x = time_s)) +
+  geom_line(aes(y = GSH_Current_µA, color = GSH_Current_µA), show.legend = FALSE) +
+  geom_line(aes(y = abGSH_Current_µA, color = abGSH_Current_µA), show.legend = FALSE) +
+  scale_color_continuous(type = "viridis") +
+  ggtitle("Reductive Effect of GSH on Glycine-Receptor") + 
+  theme_classic() +
+  labs(x = "time (s)", y = "Current µA")
+gsh_p2
+
+# animated line
+gsh_a3 <- ggplot(data = gsh, aes(x = time_s)) +
+  geom_jitter(aes(y = GSH_Current_µA, color = GSH_Current_µA), show.legend = FALSE) +
+  geom_jitter(aes(y = abGSH_Current_µA, color = abGSH_Current_µA), show.legend = FALSE) +
+  scale_color_continuous(type = "viridis") +
+  ggtitle("Oxidative Effect of GSH on Glycine-Receptor") + 
+  theme_classic() +
+  labs(x = "time (s): {frame_time}", y = "Current µA") +
+  # gganimate
+  transition_time(time = gsh$time_s) +
+  shadow_wake(wake_length = 0.1, alpha = FALSE) +
+  shadow_mark(alpha = 0.3, size = 1) +
+  ease_aes('linear')
+gsh_a3
 ```
 
 
