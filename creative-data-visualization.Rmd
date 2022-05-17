@@ -1,6 +1,7 @@
 ---
 title: "creative-data-visualization"
-author: "SLCornett"
+author: "Savvy Cornett"
+date: "17 May 2022"
 output:
   html_document: 
     theme: darkly
@@ -9,7 +10,6 @@ output:
     toc: yes
     toc_float: yes
     toc_depth: 4
-    fig_width: 10
 ---
 ```{r setup, include=FALSE}
 # These are some {knitr} options I typically use to format my ***RMarkdown*** documents in a consistent way
@@ -39,22 +39,27 @@ require(knitr)
 require(dplyr)
 require(ggplot2)
 require(gganimate)
-# from github
+# cool packages i didn't end up using
+# require(aRtsy)
+# from github 
 # devtools::install_github("marcusvolz/mathart")
 # require(mathart)
 # devtools::install_github("cutterkom/generativeart")
 # require(generativeart)
-require(aRtsy)
 ```
 
 ## Background on data\
+When I was in the second semester of my third year of undergrad, I took a course called "Enzymes," which was essentially a literature based biochemistry class on specific classes of enzymes. It was very organic chemistry focused--makes sense since biochem is bio-applied orgo-- and it inspired me to ask this research question in the Research Neurophysiology class I was taking that semester: how do reduction and oxidation (*redox*) reagents modulate the chloride current through chloride-selective ligand-gated ion channels (LGIC)?\
+The chloride LGIC in question here is the Glycine receptor. Glycine receptors mediate inhibitory synaptic transmission through the opening of a chloride-permeable pore that triggers hyperpolarization of the membrane and inhibition of the neuronal firing generated in the central nervous system (CNS). Glycine receptors are pentameric structures comprised of five subunits ($\alpha$ and $\beta$), each composed of four transmembrane domains (**Figure 1**; Lynch et al., 2004; Du et al., 2015). A central concept of the relationship between ligand binding and channel gating in Cys-loop receptors is the conformation of the Cys-loop correlate swith the functional state of the receptor (**Figure 1**; Du et al., 2015; Purohit & Auerbach, 2013; Thompson, 2010). The allosteric change in the ligand-binding domain affects the $\alpha$-subunits, resulting in the rotations of their inner $\beta$-sheets. The rotations of the sheets are transmitted by their connected M2-helices to the pore’s gate resulting in a configuration permeable to the ion. The $\alpha$-subunits act as the primary mediators of the conformational change by connecting to the transmembrane portion of the receptor, characterized by a counter-clockwise rotation of the pore’s axis (Du et al., 2015; Unwin et al., 2002).\
+Reduced glutathione (GSH) and oxidized glutathione (GSSG) are endogenous redox agents naturally present in the CNS at millimolar concentrations (5-10mM) (Calero & Calvaro, 2008). Pan et al. (1995) found, in retinal ganglion cells GSH at 5mM enhanced GABA-activated chloride currents and decreased glycine-activated chloride currents through their respective receptors. Amato et al. (1999) confirmed Pan et al.’s finding in HEK cells, showing at concentrations ranging from 1-10mM, GSH enhanced GABA-activated response in concentration-dependent manner while GSSG caused small inhibitory effects.\
 ```{r echo=FALSE, out.width="100%", message=FALSE}
 include_graphics("images/Figure_Potential_for_Redox_Modulation_of_α1-Homopentameric_GlyR.png") # context
 ```
 
 
 ## **GSSG** Oxidation\
-**LOSS OF ELECTRONS = OXIDATION**:    $X^+ - e^- = Xº$\
+**LOSS OF ELECTRONS = OXIDATION**:\
+$X^+ - e^- = Xº$\
 ```{r echo=FALSE, out.width="100%", message=FALSE}
 include_graphics("images/2018-04-05_GSSG_Trace.png") # full trace with treatment regimen
 ```
@@ -72,7 +77,7 @@ head(gssg)
 ```
 
 ### **GSSG** Trace Plots\
-```{r gssg visualizations}
+```{r gssg visualizations, out.width="100%"}
 # static plot
 gssg_p1 <- ggplot(data = gssg, aes(x = time_s, y = GSSG_Current_µA, color = GSSG_Current_µA)) +
   scale_color_continuous(type = "viridis") +
@@ -107,6 +112,11 @@ gssg_a2 <- ggplot(data = gssg, aes(x = time_s, y = GSSG_Current_µA, color = GSS
   shadow_mark(alpha = 0.3, size = 1) +
   ease_aes('linear')
 gssg_a2
+```
+
+### **GSSG** Trace Plots for Art\
+Here I plot the trace for the Glycine receptor exposed to GSSG with its absolute value trace. I think they look cool. 
+```{r GSSG + abGSSG, out.width="100%"}
 # adding the absolute value to plot bot the current and absolute value of the current together 
 # because i bet it would look very cool
 gssg <- gssg %>% mutate("abGSSG_Current_µA" = abs(GSSG_Current_µA)) 
@@ -142,7 +152,8 @@ gssg_a3
 
 
 ## **GSH** Reduction\
-**GAIN OF ELECTRIONS = REDUCTION**:   $X^+ + e^- = Xº$\
+**GAIN OF ELECTRIONS = REDUCTION**:\
+$X^+ + e^- = Xº$\
 ```{r echo=FALSE, out.width="100%", message=FALSE}
 include_graphics("images/2018-04-12_GSH_Trace.png") # full trace with treatment regimen
 ```
@@ -160,7 +171,7 @@ head(gsh)
 ```
 
 ### **GSH** Trace Plots
-```{r gsh visualizations}
+```{r gsh visualizations, out.width="100%"}
 # second verse, same as the first, but now with a reducing agent doing something unexpected
 # statics plot
 gsh_p1 <- ggplot(data = gsh, aes(x = time_s, y = GSH_Current_µA, color = GSH_Current_µA)) +
@@ -195,7 +206,11 @@ gsh_a2 <- ggplot(data = gsh, aes(x = time_s, y = GSH_Current_µA, color = GSH_Cu
   shadow_mark(alpha = 0.3, size = 1) +
   ease_aes('linear')
 gsh_a2
+```
 
+### **GHS** Trace Plots for Art\
+As above, so below: here I plot the trace for the Glycine receptor exposed to GSH with its absolute value trace. Yeah, they definitely look cool. 
+```{r GSH + abGSH, out.width="100%"}
 # adding the absolute value to plot bot the current and absolute value of the current together 
 # because i bet it would look very cool
 gsh <- gsh %>% mutate("abGSH_Current_µA" = abs(GSH_Current_µA)) 
@@ -217,7 +232,7 @@ gsh_a3 <- ggplot(data = gsh, aes(x = time_s)) +
   geom_jitter(aes(y = GSH_Current_µA, color = GSH_Current_µA), show.legend = FALSE) +
   geom_jitter(aes(y = abGSH_Current_µA, color = abGSH_Current_µA), show.legend = FALSE) +
   scale_color_continuous(type = "viridis") +
-  ggtitle("Oxidative Effect of GSH on Glycine-Receptor") + 
+  ggtitle("Reductive Effect of GSH on Glycine-Receptor") + 
   theme_classic() +
   labs(x = "time (s): {frame_time}", y = "Current µA") +
   # gganimate
@@ -230,3 +245,18 @@ gsh_a3
 
 
 ## References\
+Amato, A., Connolly, C. N., Moss, S. J., & Smart, T. G. (1999). Modulation of neuronal and recombinant GABA A receptors by redox reagents. *The Journal of Physiology, 517*(1), 35–50. <https://doi.org/10.1111/j.1469-7793.1999.0035z.x>
+
+Calero, C. I., & Calvo, D. J. (2008). Redox modulation of homomeric ρ1 GABAC receptors: Redox modulation of GABAρ1 receptors. *Journal of Neurochemistry, 10*5(6), 2367–2374. <https://doi.org/10.1111/j.1471-4159.2008.05319.x>\
+
+Du, J., Lü, W., Wu, S., Cheng, Y., & Gouaux, E. (2015). Glycine receptor mechanism elucidated by electron cryo-microscopy. *Nature, 526*(7572), 224–229. <https://doi.org/10.1038/nature14853>\
+
+Lynch, J. W. (2004). Molecular structure and function of the glycine receptor chloride channel. *Physiological Reviews, 84*(4), 1051–1095. <https://doi.org/10.1152/physrev.00042.2003>\
+
+Pan, Z. H., Bahring, R., Grantyn, R., & Lipton, S. A. (1995). Differential modulation by sulfhydryl redox agents and glutathione of GABA- and glycine-evoked currents in rat retinal ganglion cells. *Journal of Neuroscience, 15*(2), 1384–1391. <https://doi.org/10.1523/JNEUROSCI.15-02-01384.1995>\
+
+Purohit, P., & Auerbach, A. (2013). Loop C and the mechanism of acetylcholine receptor–channel gating. *Journal of General Physiology, 141*(4), 467–478. <https://doi.org/10.1085/jgp.201210946>\
+
+Thompson, A. J., Lester, H. A., & Lummis, S. C. R. (2010). The structural basis of function in Cys-loop receptors. *Quarterly Reviews of Biophysics, 43*(4), 449–499. <https://doi.org/10.1017/S0033583510000168>\
+
+Unwin, N., Miyazawa, A., Li, J., & Fujiyoshi, Y. (2002). Activation of the nicotinic acetylcholine receptor involves a switch in conformation of the α subunits. *Journal of Molecular Biology, 319*(5), 1165–1176. <https://doi.org/10.1016/S0022-2836(02)00381-9>\
